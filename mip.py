@@ -3,7 +3,7 @@ import time
 from ortools.linear_solver import pywraplp
 C = 1e6
 # file_name = "./data/data_20_15.txt"
-file_name = "./new_txt_data/case_2.txt"
+file_name = "./txt_data/case_5.txt"
 # read data
 
 
