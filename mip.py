@@ -1,9 +1,10 @@
-from asyncore import read
 import time
 from ortools.linear_solver import pywraplp
 C = 1e6
 # file_name = "./data/data_20_15.txt"
-file_name = "./txt_data/case_5.txt"
+fn = "case_1"
+file_name = "./6_26_new_data/" + fn + ".txt"
+output = "./result/" + fn + ".txt"
 # read data
 
 
@@ -64,8 +65,8 @@ def create_constraint_1(solver, M, x, y, s):
 
 
 def create_constraint_2(solver, M, x, y):
-    for i in range(0, M+2):
-        for j in range(0, M+2):
+    for i in range(1, M+1):
+        for j in range(1, M+1):
             if i != j:
                 solver.Add(y[i]+y[j] + C*(1-x[i, j]) >= 2)
                 solver.Add(y[i]+y[j] + C*(x[i, j]-1) <= 2)
@@ -136,17 +137,22 @@ def Trace(M, rs):
     trace_ = int(0)
     trace = [0]
     S = 0
-    while True:
-        for i in range(0, M+2):
-            if i != trace_ and rs[trace_][i] > 0:
-                S += d[trace_][i%(M+1)]
-                trace_ = i
+    with open(output, 'w') as wf:
+        wf.write(f'{0} ')
+        while True:
+            for i in range(0, M+2):
+                if i != trace_ and rs[trace_][i] > 0:
+                    S += d[trace_][i%(M+1)]
+                    trace_ = i
+                    wf.write(f'{trace_} ')
+                    break 
+            if trace_ == M+1:
                 break
-        if trace_ == M+1:
-            break
-        trace.append(trace_)
-    trace.append(0)
-    print('S_min = ', S)
+            trace.append(trace_)
+        wf.write(f'{0}\n')
+        wf.write(f'{S}\n')
+        trace.append(0)
+        print('S_min = ', S)
     return trace
 
 
@@ -187,5 +193,8 @@ if __name__ == "__main__":
     time1 = time.time()
     Solve(M, N, Q, q, d, total, maxd)
     time2 = time.time()
+    t = time2-time1
+    with open(output, 'a') as wf:
+        wf.write(f'{t}')
     print("Time: ", time2 - time1)
     print("end")
